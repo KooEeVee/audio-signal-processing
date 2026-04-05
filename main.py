@@ -34,7 +34,7 @@ def main():
 
     #-----------------------------------------------------------------------------#
     # Select a test signal: guzheng, piano, rooster, flute1_4, flute1_8, flute1_16
-    signal = flute1_8
+    signal = flute1_16
     #-----------------------------------------------------------------------------#
     
     # Play the test signal
