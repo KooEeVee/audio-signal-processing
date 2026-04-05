@@ -2,7 +2,8 @@ import play
 import plot
 import librosa
 import numpy as np
-
+import pretty_midi
+from music21 import converter
 
 # TEST SIGNALS
 
@@ -28,7 +29,7 @@ max_freq = 4186 #[Hz] maximum frequency for frequency range
 def main():
     #-----------------------------------------------------------------------------#
     # Select a test signal: guzheng, piano, rooster, flute1_4, flute1_8, flute1_16
-    signal = flute1_16 # <-- adjust this parameter
+    signal = flute1_8
     #-----------------------------------------------------------------------------#
     
     # Play the test signal
@@ -68,7 +69,7 @@ def main():
     else:
         #-----------------------------------------------------------------------------#
         #Onset merging threshold
-        threshold = 0.05 #[s] threshold in seconds <-- adjust this parameter shorter, if test signal notes change fast
+        threshold = 0.1 #[s] threshold in seconds <-- adjust this parameter shorter, if test signal notes change fast
         #-----------------------------------------------------------------------------#
 
         merged = [onset_times[0]]
@@ -118,6 +119,19 @@ def main():
         #print(f"Onset times: {onset_times_unique}")
         #print(f"Onset pitches: {onset_pitches}")
         plot.plot_cqt_f0_notes(mag_db, hop, fs, t[voiced_flag], f0[voiced_flag], bins_octave, f_min, onset_times_unique, note_names_unique, onset_pitches, "Test Signal Pitch with pYIN")
+
+        # Save MIDI note as MIDI file
+        midi = pretty_midi.PrettyMIDI()
+        piano = pretty_midi.Instrument(program=0)
+        for pitch, start, end, _ in clean_notes:
+            note = pretty_midi.Note(velocity=100, pitch=pitch, start=start, end=end)
+            piano.notes.append(note)
+        midi.instruments.append(piano)
+        midi.write("notes_pyin.mid")
+
+        # Generate MusicXML file using MIDI file
+        score = converter.parse("notes_pyin.mid")
+        score.write("musicxml", fp="notes_pyin.xml")
 
 if __name__ == "__main__":
     main()
