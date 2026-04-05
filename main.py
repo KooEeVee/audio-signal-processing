@@ -26,9 +26,10 @@ min_freq = 29 #[Hz] minimum frequency for frequency range
 max_freq = 4186 #[Hz] maximum frequency for frequency range
 
 def main():
-
+    #-----------------------------------------------------------------------------#
     # Select a test signal: guzheng, piano, rooster, flute1_4, flute1_8, flute1_16
-    signal = rooster
+    signal = flute1_16 # <-- adjust this parameter
+    #-----------------------------------------------------------------------------#
     
     # Play the test signal
     play.play(signal, fs)
@@ -48,6 +49,75 @@ def main():
     mag = np.abs(D)
     mag_db = librosa.amplitude_to_db(mag, ref=np.max)
     plot.plot_spectrogram_f0(mag_db, hop, fs, t[voiced_flag], f0[voiced_flag], "Test Signal Pitch with pYIN")
+
+    # Compute Constant-Q Transform (CQT)
+    f_min = librosa.note_to_hz("A0")
+    bins = 88
+    bins_octave = 12
+    C = librosa.cqt(signal, sr=fs, hop_length=hop, fmin=f_min, n_bins=bins, bins_per_octave=bins_octave)
+    mag = np.abs(C)
+    mag_db = librosa.amplitude_to_db(mag, ref=np.max)
+
+    # Detect note onset and merge by median pitch
+    onset_frames = librosa.onset.onset_detect(y=signal, sr=fs, hop_length=hop)
+    onset_times = librosa.frames_to_time(onset_frames, sr=fs, hop_length=hop)
+
+    if len(onset_times) == 0:
+        print("No onsets detected.")
+
+    else:
+        #-----------------------------------------------------------------------------#
+        #Onset merging threshold
+        threshold = 0.05 #[s] threshold in seconds <-- adjust this parameter shorter, if test signal notes change fast
+        #-----------------------------------------------------------------------------#
+
+        merged = [onset_times[0]]
+        for onset in onset_times[1:]:
+            if onset - merged[-1] >= threshold:
+                merged.append(onset)
+        onset_times = merged
+
+        notes = []
+        signal_end = librosa.get_duration(y=signal, sr=fs)
+        frame_times = librosa.frames_to_time(np.arange(len(f0)), sr=fs, hop_length=hop)
+        for i, start_time in enumerate(onset_times):
+            end_time = onset_times[i + 1] if i + 1 < len(onset_times) else signal_end
+            mask = (frame_times >= start_time) & (frame_times < end_time) & (voiced_flag)
+            segment_pitches = f0[mask]
+
+            if len(segment_pitches) == 0:
+                continue
+            
+            median_pitch = np.median(segment_pitches)
+            midi_note_pyin = int(np.round(librosa.hz_to_midi(median_pitch)))
+            notes.append((midi_note_pyin, start_time, end_time, median_pitch))
+
+        clean_notes = []
+        last_midi = None
+
+        for midi_note, start_time, end_time, median_pitch in notes:
+            if midi_note != last_midi:
+                clean_notes.append((midi_note, start_time, end_time, median_pitch))
+                last_midi = midi_note
+            else:
+                previous = clean_notes[-1]
+                merged_end_time = max(previous[2], end_time)
+                merged_pitch = (previous[3] + median_pitch) / 2
+                clean_notes[-1] = (previous[0], previous[1], merged_end_time, merged_pitch)
+
+        note_names_unique = []
+        onset_times_unique = []
+        onset_pitches = []
+
+        for midi_note, start_time, end_time, median_pitch in clean_notes:
+            note_name = librosa.midi_to_note(midi_note)
+            note_names_unique.append(note_name)
+            onset_times_unique.append(start_time)
+            onset_pitches.append(median_pitch)
+
+        #print(f"Onset times: {onset_times_unique}")
+        #print(f"Onset pitches: {onset_pitches}")
+        plot.plot_cqt_f0_notes(mag_db, hop, fs, t[voiced_flag], f0[voiced_flag], bins_octave, f_min, onset_times_unique, note_names_unique, onset_pitches, "Test Signal Pitch with pYIN")
 
 if __name__ == "__main__":
     main()
