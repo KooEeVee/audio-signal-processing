@@ -17,16 +17,21 @@ flute1_16, _ = play.wav_to_array("flute_C_1_16.wav")
 
 # PARAMETERS FOR PYIN ALGORITHM
 
+#-----------------------------------------------------------------------------#
 # Define parameters for frames
-N_ms = 40 #[ms] frame length in milliseconds
+N_ms = 40 #[ms] frame length in milliseconds <-- adjust this parameter
 N = int(fs * N_ms / 1000) #frame length in samples
 hop = N // 2 #50% hop size, overlap in frame length
 
 #Define a range for target frequencies
-min_freq = 29 #[Hz] minimum frequency for frequency range
-max_freq = 4186 #[Hz] maximum frequency for frequency range
+min_freq = 29 #[Hz] minimum frequency for frequency range <-- adjust this parameter
+max_freq = 4186 #[Hz] maximum frequency for frequency range <-- adjust this parameter
+#-----------------------------------------------------------------------------#
 
 def main():
+
+    # SELECT AND PLAY A TEST SIGNAL
+
     #-----------------------------------------------------------------------------#
     # Select a test signal: guzheng, piano, rooster, flute1_4, flute1_8, flute1_16
     signal = flute1_8
@@ -34,6 +39,8 @@ def main():
     
     # Play the test signal
     play.play(signal, fs)
+
+    # PYIN COMPUTATION AND PLOTTING IN TIME-DOMAIN
 
     # Apply pYIN to a monophonic melody signal and plot in time
     f0, voiced_flag, voiced_prob = librosa.pyin(y=signal, fmin=min_freq, fmax=max_freq, sr=fs, frame_length=N, hop_length=hop, fill_na=0)
@@ -45,11 +52,15 @@ def main():
     note_names = librosa.hz_to_note(f0[voiced_flag])
     print(note_names)
 
+    # STFT COMPUTATION AND PLOTTING A SPECTROGRAM
+
     # Compute Short-Time-Fourier-Transform (STFT) and plot spectrogram
     D = librosa.stft(signal, n_fft=N, hop_length=hop)
     mag = np.abs(D)
     mag_db = librosa.amplitude_to_db(mag, ref=np.max)
     plot.plot_spectrogram_f0(mag_db, hop, fs, t[voiced_flag], f0[voiced_flag], "Test Signal Pitch with pYIN")
+
+    # CQT COMPUTATION
 
     # Compute Constant-Q Transform (CQT)
     f_min = librosa.note_to_hz("A0")
@@ -59,9 +70,11 @@ def main():
     mag = np.abs(C)
     mag_db = librosa.amplitude_to_db(mag, ref=np.max)
 
+    # DETECTING THE NOTES ONSETS AND MEDIAN PITCHES
+
     # Detect note onset and merge by median pitch
-    onset_frames = librosa.onset.onset_detect(y=signal, sr=fs, hop_length=hop)
-    onset_times = librosa.frames_to_time(onset_frames, sr=fs, hop_length=hop)
+    onset_frames = librosa.onset.onset_detect(y=signal, sr=fs, hop_length=hop) #frame indices where onsets are detected
+    onset_times = librosa.frames_to_time(onset_frames, sr=fs, hop_length=hop) #onset positions converted to seconds
 
     if len(onset_times) == 0:
         print("No onsets detected.")
@@ -69,7 +82,7 @@ def main():
     else:
         #-----------------------------------------------------------------------------#
         #Onset merging threshold
-        threshold = 0.1 #[s] threshold in seconds <-- adjust this parameter shorter, if test signal notes change fast
+        threshold = 0.1 #[s] threshold in seconds <-- adjust this parameter: lower for faster note changes
         #-----------------------------------------------------------------------------#
 
         merged = [onset_times[0]]
@@ -119,6 +132,8 @@ def main():
         #print(f"Onset times: {onset_times_unique}")
         #print(f"Onset pitches: {onset_pitches}")
         plot.plot_cqt_f0_notes(mag_db, hop, fs, t[voiced_flag], f0[voiced_flag], bins_octave, f_min, onset_times_unique, note_names_unique, onset_pitches, "Test Signal Pitch with pYIN")
+
+        # TRANSCRIPTING THE NOTES TO A SCORE FILE
 
         # Save MIDI note as MIDI file
         midi = pretty_midi.PrettyMIDI()
