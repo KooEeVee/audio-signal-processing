@@ -28,7 +28,7 @@ max_freq = 4186 #[Hz] maximum frequency for frequency range
 def main():
 
     # Select a test signal: guzheng, piano, rooster, flute1_4, flute1_8, flute1_16
-    signal = flute1_4
+    signal = rooster
     
     # Play the test signal
     play.play(signal, fs)
@@ -39,6 +39,15 @@ def main():
     t = librosa.frames_to_time(frames=t_frames, sr=fs, hop_length=hop)
     plot.plot_in_time(t, f0, "Pitches in Time pYIN")
 
+    # Convert pitches (Hz) to note names
+    note_names = librosa.hz_to_note(f0[voiced_flag])
+    print(note_names)
+
+    # Compute Short-Time-Fourier-Transform (STFT) and plot spectrogram
+    D = librosa.stft(signal, n_fft=N, hop_length=hop)
+    mag = np.abs(D)
+    mag_db = librosa.amplitude_to_db(mag, ref=np.max)
+    plot.plot_spectrogram_f0(mag_db, hop, fs, t[voiced_flag], f0[voiced_flag], "Test Signal Pitch with pYIN")
 
 if __name__ == "__main__":
     main()
