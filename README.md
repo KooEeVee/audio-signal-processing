@@ -39,6 +39,9 @@ Comparing synthesized flute notes pitch detection. The first example is eighth n
 #### Flute 1/16 notes - transcription
 ![Transcription score](img/flute_1-16_transcription.png)
 
+## Implementation
+
+[Implementation](https://github.com/KooEeVee/audio-signal-processing/blob/main/implementation.md)
 
 ## Sources and references
 - [GUZHENG - instrument- Single Note - Sound by nanliu_music License: Creative Commons 0](https://freesound.org/s/847157/)

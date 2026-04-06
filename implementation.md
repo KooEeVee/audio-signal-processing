@@ -2,8 +2,6 @@
 
 The program is implemented in Python using the following libraries:
 - librosa — pYIN pitch detection, STFT, CQT, onset detection
-- pretty_midi — MIDI file creation and export
-- music21 — MusicXML file generation from MIDI
 - sounddevice / soundfile — audio playback and WAV file loading
 - matplotlib.pyplot — visualization
 - numpy — array and numerical processing
@@ -37,7 +35,7 @@ Select the signal from the available test signals. Play the signal through the d
 Only voiced frames are converted, unvoiced frames are excluded via voiced_flag.
 
 ## Compute Short-Time Fourier Transform (STFT) and plot spectrogram with F0 overlay
-The spectrogram is plotted with the pYIN F0 estimate overlaid in red, showing only voiced frames.
+The spectrogram is plotted with the pYIN F0 estimate overlaid, showing only voiced frames.
 - D - complex STFT matrix
 - mag - magnitude spectrum, absolute values of D
 - mag_db - magnitude converted to decibels, normalized to the peak magnitude
@@ -69,17 +67,8 @@ If two consecutive segments have the same MIDI note: end time is extended to the
 - last_midi - tracks the previous MIDI note to detect consecutive duplicates
 
 ## Extract note names, onset times and pitches for plotting
-MIDI note numbers are converted to note name strings (e.g. 60 -> "C4"). The CQT spectrogram is plotted with the pYIN F0 estimate overlaid in green and note name labels at each onset position.
+MIDI note numbers are converted to note name strings (e.g. 60 -> "C4"). Two CQT spectrograms are plotted with the pYIN F0 estimate overlaid. The other one shows note name labels and the other shows frequencies at each onset position. 
 - note_names_unique - note name strings for each unique note (e.g. "C4", "A3")
 - onset_times_unique - start time in seconds for each unique note
 - onset_pitches - median pitch in Hz for each unique note
-
-## Export detected notes to a MIDI file
-A single piano instrument is created and all clean_notes are added as MIDI notes. The MIDI file is saved as notes_pyin.mid in the project directory.
-- velocity - note loudness, fixed at 100 (range 0-127)
-- pitch - MIDI note number
-- start - note onset time in seconds
-- end - note offset time in seconds
-
-## Convert the MIDI file to MusicXML
-- MusicXML is a standard notation format readable by notation software such as MuseScore. The MusicXML file is saved as notes_pyin.xml in the project directory.
+- onset_pitches_hz - frequency strings for each unique frequency (e.g. "191.7", "736.6")

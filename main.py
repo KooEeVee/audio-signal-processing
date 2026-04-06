@@ -14,6 +14,9 @@ rooster, _ = play.wav_to_array("39923__dobroide__20070812rooster_mono.wav")
 flute1_4, _ = play.wav_to_array("flute_C_1-4.wav")
 flute1_8, _ = play.wav_to_array("flute_C_1-8.wav")
 flute1_16, _ = play.wav_to_array("flute_C_1_16.wav")
+#piano_A7, _ = play.wav_to_array("Piano.ff.A7.44100.wav")
+#male_voice, _ = play.wav_to_array("MI49_07.wav")
+#female_voice, _ = play.wav_to_array("FD19_04.wav")
 
 # PARAMETERS FOR PYIN ALGORITHM
 
@@ -33,7 +36,7 @@ def main():
     # SELECT AND PLAY A TEST SIGNAL
 
     #-----------------------------------------------------------------------------#
-    # Select a test signal: guzheng, piano, rooster, flute1_4, flute1_8, flute1_16
+    # Select a test signal: guzheng, piano, rooster, flute1_4, flute1_8, flute1_16, piano_A7
     signal = flute1_16
     #-----------------------------------------------------------------------------#
     
@@ -122,18 +125,21 @@ def main():
         note_names_unique = []
         onset_times_unique = []
         onset_pitches = []
+        onset_pitches_hz = []
 
         for midi_note, start_time, end_time, median_pitch in clean_notes:
             note_name = librosa.midi_to_note(midi_note)
             note_names_unique.append(note_name)
             onset_times_unique.append(start_time)
             onset_pitches.append(median_pitch)
+            onset_pitches_hz.append(f"{median_pitch:.1f}")
 
         #print(f"Onset times: {onset_times_unique}")
         #print(f"Onset pitches: {onset_pitches}")
         plot.plot_cqt_f0_notes(mag_db, hop, fs, t[voiced_flag], f0[voiced_flag], bins_octave, f_min, onset_times_unique, note_names_unique, onset_pitches, "Test Signal Pitch with pYIN")
+        plot.plot_cqt_f0_hz(mag_db, hop, fs, t[voiced_flag], f0[voiced_flag], bins_octave, f_min, onset_times_unique, onset_pitches_hz, onset_pitches, "Test Signal Pitch with pYIN")
 
-        # TRANSCRIPTING THE NOTES TO A SCORE FILE
+"""         # TRANSCRIPTING THE NOTES TO A SCORE FILE
 
         # Save MIDI note as MIDI file
         midi = pretty_midi.PrettyMIDI()
@@ -146,7 +152,7 @@ def main():
 
         # Generate MusicXML file using MIDI file
         score = converter.parse("notes_pyin.mid")
-        score.write("musicxml", fp="notes_pyin.xml")
+        score.write("musicxml", fp="notes_pyin.xml") """
 
 if __name__ == "__main__":
     main()
