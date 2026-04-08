@@ -4,40 +4,24 @@
 
 WIP
 
-## Example results from the program runs
+## Example results from the program run
 
-### Flute melody
-Comparing synthesized flute notes pitch detection. The first example is eighth note duration and the second is sixteenth note duration. The algorithm detects both melodies well, which can be observed from the time-domain and spectrogram plots. However, the CQT plot and score transcription reveal notable timing problems when comparing the original score to the transcription based on detected pitches.
+### Rooster crow
 
-#### Flute 1/8 notes - original score
-![Original score](img/flute_original_score.png)
+#### Pitches in time-domain
+![Pitches in time-domain](img/pyin_rooster_time.png)
 
-#### Flute 1/8 notes - pitches in time-domain
-![Pitches in time-domain](img/flute_1-8_time.png)
+#### Pitches in spectrogram
+![Pitches in spectrogram](img/pyin_rooster_spectrogram.png)
 
-#### Flute 1/8 notes - spectrogram
-![Pitches in spectrogram](img/flute_1-8_spectrogram.png)
+#### Pitches in CQT with frequencies
+![Pitches in CQT with frequencies](img/pyin_rooster_cqt.png)
 
-#### Flute 1/8 notes - CQT
-![Pitches in CQT](img/flute_1-8_cqt.png)
+#### Pitches in CQT with note names
+![Pitches in CQT with note names](img/pyin_rooster_cqt_notes.png)
 
-#### Flute 1/8 notes - transcription
-![Transcription score](img/flute_1-8_transcription.png)
-
-#### Flute 1/16 notes - original score
-![Original score](img/flute_1-16_original_score.png)
-
-#### Flute 1/16 notes - pitches in time-domain
-![Pitches in time-domain](img/flute_1-16_time.png)
-
-#### Flute 1/16 notes - spectrogram
-![Pitches in spectrogram](img/flute_1-16_spectrogram.png)
-
-#### Flute 1/16 notes - CQT
-![Pitches in CQT](img/flute_1-16_cqt.png)
-
-#### Flute 1/16 notes - transcription
-![Transcription score](img/flute_1-16_transcription.png)
+#### Pitches audio output as synthesized sine waves
+![Pitches audio output](pitches_pyin.wav)
 
 ## Implementation
 
