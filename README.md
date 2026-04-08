@@ -21,7 +21,7 @@ WIP
 ![Pitches in CQT with note names](img/pyin_rooster_cqt_notes.png)
 
 #### Pitches audio output as synthesized sine waves
-![Pitches audio output](pitches_pyin.wav)
+[Pitches audio output](pitches_pyin.wav)
 
 ## Implementation
 
