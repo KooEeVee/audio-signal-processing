@@ -2,7 +2,7 @@
 
 The program is implemented in Python using the following libraries:
 - librosa — pYIN pitch detection, STFT, CQT, onset detection
-- sounddevice / soundfile — audio playback and WAV file loading
+- sounddevice / soundfile — audio playback and WAV file loading and writing
 - matplotlib.pyplot — visualization
 - numpy — array and numerical processing
 
@@ -72,3 +72,6 @@ MIDI note numbers are converted to note name strings (e.g. 60 -> "C4"). Two CQT 
 - onset_times_unique - start time in seconds for each unique note
 - onset_pitches - median pitch in Hz for each unique note
 - onset_pitches_hz - frequency strings for each unique frequency (e.g. "191.7", "736.6")
+
+## Play back the pYIN detected pitches as synthesized sine waves
+For each note in clean_notes, a sine wave is synthesized at the median detected pitch (raw Hz from pYIN, not rounded to MIDI. The synthesized audio is played back and saved to pitches_pyin.wav.

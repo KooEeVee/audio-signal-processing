@@ -2,18 +2,20 @@ import play
 import plot
 import librosa
 import numpy as np
-import pretty_midi
-from music21 import converter
+#import pretty_midi
+import soundfile as sf
+#from music21 import converter
 
 # TEST SIGNALS
 
 # Read wav to array, sample rate 44.1 kHz
 guzheng, fs = play.wav_to_array("847157__nanliu_music__guzheng-instrument-single-note-sound_mono.wav")
-piano, _ = play.wav_to_array("847227__nanliu_music__acoustic-piano-c4-forte_mono.wav")
+pianoC4, _ = play.wav_to_array("847227__nanliu_music__acoustic-piano-c4-forte_mono.wav")
 rooster, _ = play.wav_to_array("39923__dobroide__20070812rooster_mono.wav")
 flute1_4, _ = play.wav_to_array("flute_C_1-4.wav")
 flute1_8, _ = play.wav_to_array("flute_C_1-8.wav")
 flute1_16, _ = play.wav_to_array("flute_C_1_16.wav")
+#guitar, _ = play.wav_to_array("guitar_mono.wav")
 #piano_A7, _ = play.wav_to_array("Piano.ff.A7.44100.wav")
 #male_voice, _ = play.wav_to_array("MI49_07.wav")
 #female_voice, _ = play.wav_to_array("FD19_04.wav")
@@ -36,8 +38,8 @@ def main():
     # SELECT AND PLAY A TEST SIGNAL
 
     #-----------------------------------------------------------------------------#
-    # Select a test signal: guzheng, piano, rooster, flute1_4, flute1_8, flute1_16, piano_A7
-    signal = flute1_16
+    # Select a test signal: guzheng, pianoC4, rooster, flute1_4, flute1_8, flute1_16
+    signal = rooster
     #-----------------------------------------------------------------------------#
     
     # Play the test signal
@@ -134,13 +136,26 @@ def main():
             onset_pitches.append(median_pitch)
             onset_pitches_hz.append(f"{median_pitch:.1f}")
 
-        #print(f"Onset times: {onset_times_unique}")
-        #print(f"Onset pitches: {onset_pitches}")
+        # CQT PLOTTING
+
         plot.plot_cqt_f0_notes(mag_db, hop, fs, t[voiced_flag], f0[voiced_flag], bins_octave, f_min, onset_times_unique, note_names_unique, onset_pitches, "Test Signal Pitch with pYIN")
         plot.plot_cqt_f0_hz(mag_db, hop, fs, t[voiced_flag], f0[voiced_flag], bins_octave, f_min, onset_times_unique, onset_pitches_hz, onset_pitches, "Test Signal Pitch with pYIN")
 
-"""         # TRANSCRIPTING THE NOTES TO A SCORE FILE
+        # PLAYING BACK THE PYIN DETECTED PITCHES
+        
+        audio_out = np.zeros(int(signal_end * fs))
+        for _, start, end, median_pitch in clean_notes:
+            freq = median_pitch
+            t_note = np.arange(int((end - start) * fs)) / fs
+            sine = 0.5 * np.sin(2 * np.pi * freq * t_note)
+            start_sample = int(start * fs)
+            audio_out[start_sample:start_sample + len(sine)] += sine
+        play.play(audio_out, fs)
+        play.write("pitches_pyin.wav", audio_out, fs)
 
+        # TRANSCRIPTING THE NOTES TO A SCORE FILE
+
+        """
         # Save MIDI note as MIDI file
         midi = pretty_midi.PrettyMIDI()
         piano = pretty_midi.Instrument(program=0)
