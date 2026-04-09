@@ -3,20 +3,26 @@ import plot
 import librosa
 import numpy as np
 #import pretty_midi
-import soundfile as sf
+#import soundfile as sf
 #from music21 import converter
 
 # TEST SIGNALS
 
-# Read wav to array, sample rate 44.1 kHz
+# Read wav to array, sample rate 44.1 kHz and normalize
 guzheng, fs = play.wav_to_array("847157__nanliu_music__guzheng-instrument-single-note-sound_mono.wav")
 pianoC4, _ = play.wav_to_array("847227__nanliu_music__acoustic-piano-c4-forte_mono.wav")
 rooster, _ = play.wav_to_array("39923__dobroide__20070812rooster_mono.wav")
+rooster = play.normalize(rooster)
+#play.write("39923__dobroide__20070812rooster_mono_n.wav", rooster, fs)
 flute1_4, _ = play.wav_to_array("flute_C_1-4.wav")
 flute1_8, _ = play.wav_to_array("flute_C_1-8.wav")
 flute1_16, _ = play.wav_to_array("flute_C_1_16.wav")
-#guitar, _ = play.wav_to_array("guitar_mono.wav")
-#piano_A7, _ = play.wav_to_array("Piano.ff.A7.44100.wav")
+guitar, _ = play.wav_to_array("guitar_mono.wav")
+guitar = play.normalize(guitar)
+#play.write("guitar_mono_n.wav", guitar, fs)
+piano_A7, _ = play.wav_to_array("Piano.ff.A7.44100.wav")
+piano_A7 = play.normalize(piano_A7)
+#play.write("Piano.ff.A7.44100_n.wav", piano_A7, fs)
 #male_voice, _ = play.wav_to_array("MI49_07.wav")
 #female_voice, _ = play.wav_to_array("FD19_04.wav")
 
@@ -51,7 +57,10 @@ def main():
     f0, voiced_flag, voiced_prob = librosa.pyin(y=signal, fmin=min_freq, fmax=max_freq, sr=fs, frame_length=N, hop_length=hop, fill_na=0)
     t_frames = np.arange(len(f0))
     t = librosa.frames_to_time(frames=t_frames, sr=fs, hop_length=hop)
-    plot.plot_in_time(t, f0, "Pitches in Time pYIN")
+    plot.plot_in_time(t, f0, voiced_prob, signal, fs, "Pitches in Time pYIN")
+    print(f0)
+    print(voiced_flag)
+    print(voiced_prob)
 
     # Convert pitches (Hz) to note names
     note_names = librosa.hz_to_note(f0[voiced_flag])
@@ -150,6 +159,7 @@ def main():
             sine = 0.5 * np.sin(2 * np.pi * freq * t_note)
             start_sample = int(start * fs)
             audio_out[start_sample:start_sample + len(sine)] += sine
+        audio_out = play.normalize(audio_out)
         play.play(audio_out, fs)
         play.write("pitches_pyin.wav", audio_out, fs)
 

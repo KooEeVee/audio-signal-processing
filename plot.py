@@ -3,13 +3,23 @@ import librosa.display
 import numpy as np
 
 # Plot signal in time-domain
-def plot_in_time(t, x, title):
-    plt.figure()
-    plt.plot(t, x)
-    plt.title(f"{title}")
-    plt.xlabel("Time [s]")
-    plt.ylabel("Amplitude")
-    plt.grid(True)
+def plot_in_time(t, x, voiced_prob, original, fs, title):
+    t_signal = np.arange(len(original)) / fs
+    fig, (ax1, ax2, ax3) = plt.subplots(3, 1, sharex=True)
+    ax1.plot(t, x)
+    ax1.set_title(title)
+    ax1.set_ylabel("Frequency [Hz]")
+    ax1.grid(True)
+    ax2.plot(t, voiced_prob, color="orange")
+    ax2.set_ylabel("Voiced Probability")
+    ax2.set_xlabel("Time [s]")
+    ax2.set_ylim(0, 1)
+    ax2.grid(True)
+    ax3.plot(t_signal, original, color="green")
+    ax3.set_ylabel("Amplitude")
+    ax3.set_xlabel("Time [s]")
+    ax3.grid(True)
+    plt.tight_layout()
     plt.show()
 
 # Plot signal spectrogram in seconds and frequencies and detected pitch with frequencies

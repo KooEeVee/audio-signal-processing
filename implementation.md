@@ -25,7 +25,7 @@ All signals are mono WAV files sampled at 44.1 kHz (fs = 44100 Hz). Signals are 
 ## Select and play a test signal
 Select the signal from the available test signals. Play the signal through the default audio output device.
 
-## Apply pYIN algorithm to estimate fundamental frequency (F0) of the signal and plot pitches in time-domain
+## Apply pYIN algorithm to estimate fundamental frequency (F0) of the signal and plot pitches, voiced_porb and original signal in time-domain
 - f0 - F0 estimate in Hz per frame, 0 where unvoiced
 - voiced_flag - boolean array, True where the frame is classified as voiced
 - voiced_prob - probability of each frame being voiced [0, 1]

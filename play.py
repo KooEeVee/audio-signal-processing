@@ -1,5 +1,6 @@
 import sounddevice as sd
 import soundfile as sf
+import numpy as np
 
 def play(signal, fs):
     sd.play(signal, fs)
@@ -11,3 +12,6 @@ def wav_to_array(signal):
 
 def write(filename, signal, fs):
     sf.write(filename, signal, fs)
+
+def normalize(signal):
+    return signal / np.max(np.abs(signal))
