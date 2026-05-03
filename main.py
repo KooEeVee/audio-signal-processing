@@ -23,8 +23,6 @@ guitar = play.normalize(guitar)
 piano_A7, _ = play.wav_to_array("Piano.ff.A7.44100.wav")
 piano_A7 = play.normalize(piano_A7)
 #play.write("Piano.ff.A7.44100_n.wav", piano_A7, fs)
-#male_voice, _ = play.wav_to_array("MI49_07.wav")
-#female_voice, _ = play.wav_to_array("FD19_04.wav")
 
 # PARAMETERS FOR PYIN ALGORITHM
 
@@ -44,7 +42,7 @@ def main():
     # SELECT AND PLAY A TEST SIGNAL
 
     #-----------------------------------------------------------------------------#
-    # Select a test signal: guzheng, pianoC4, rooster, flute1_4, flute1_8, flute1_16
+    # Select a test signal: guitar, piano_A7, guzheng, pianoC4, rooster, flute1_4, flute1_8, flute1_16
     signal = rooster
     #-----------------------------------------------------------------------------#
     
