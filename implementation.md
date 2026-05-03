@@ -10,10 +10,12 @@ The program is implemented in Python using the following libraries:
 All signals are mono WAV files sampled at 44.1 kHz (fs = 44100 Hz). Signals are loaded as float32 numpy arrays.
 - guzheng - single notes recorded from a traditional Chinese string instrument (notes: A3, C3)
 - piano - single note recorded from an acoustic piano (note: C4)
+- piano_A7 - single note recorded from an acoustic piano (note: A7)
 - rooster - recorded rooster crow, non-musical test case
 - flute1_4  - synthesized flute notes, quarter note duration, tempo 120bpm (notes: C5, D5, E5, F5, G4, A4, B4, C5)
 - flute1_8  - synthesized flute notes, eighth note duration, tempo 120bpm (notes: C5, D5, E5, F5, G4, A4, B4, C5)
 - flute1_16 - synthesized flute notes, sixteenth note duration, tempo 120bpm (notes: C5, D5, E5, F5, G4, A4, B4, C5)
+- guitar - descending scale recorded from an electric guitar
 
 ## pYIN parameters
 - N_ms - frame length in milliseconds
@@ -74,4 +76,4 @@ MIDI note numbers are converted to note name strings (e.g. 60 -> "C4"). Two CQT 
 - onset_pitches_hz - frequency strings for each unique frequency (e.g. "191.7", "736.6")
 
 ## Play back the pYIN detected pitches as synthesized sine waves
-For each note in clean_notes, a sine wave is synthesized at the median detected pitch (raw Hz from pYIN, not rounded to MIDI. The synthesized audio is played back and saved to pitches_pyin.wav.
+For each note in clean_notes, a sine wave is synthesized at the median detected pitch (raw Hz from pYIN, not rounded to MIDI). The synthesized audio is played back and saved to pitches_pyin.wav.
