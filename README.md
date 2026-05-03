@@ -1,15 +1,18 @@
 # Pitch detection with pYIN
 
-## Introduction to pYIN algorithm
+## Introduction to pYIN pitch detection algorithm
 
-WIP
+PYIN (Probabilistic YIN) algorithm was proposed by Matthias Mauch and Simon Dixon (2014) in their article ”PYIN: A
+fundamental frequency estimator using probabilistic threshold distributions”. Mauch and Dixon introduce
+several improvements to classic YIN to make the pitch detection algorithm more robust to octave errors and sudden
+jumps. Both PYIN and YIN are based on autocorrelation.
 
 ## Example results from the program run
 
 ### Rooster crow
 
 #### Pitches in time-domain
-![Pitches in time-domain](img/pyin_rooster_time.png)
+![Pitches in time-domain](img/pyin_time_rooster.png)
 
 #### Pitches in spectrogram
 ![Pitches in spectrogram](img/pyin_rooster_spectrogram.png)
