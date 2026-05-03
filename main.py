@@ -57,14 +57,14 @@ def main():
     f0, voiced_flag, voiced_prob = librosa.pyin(y=signal, fmin=min_freq, fmax=max_freq, sr=fs, frame_length=N, hop_length=hop, fill_na=0)
     t_frames = np.arange(len(f0))
     t = librosa.frames_to_time(frames=t_frames, sr=fs, hop_length=hop)
-    plot.plot_in_time(t, f0, voiced_prob, signal, fs, "Pitches in Time pYIN")
-    print(f0)
-    print(voiced_flag)
-    print(voiced_prob)
+    plot.plot_in_time(t, f0, voiced_prob, signal, fs)
+    #print(f0)
+    #print(voiced_flag)
+    #print(voiced_prob)
 
     # Convert pitches (Hz) to note names
     note_names = librosa.hz_to_note(f0[voiced_flag])
-    print(note_names)
+    #print(note_names)
 
     # STFT COMPUTATION AND PLOTTING A SPECTROGRAM
 
@@ -152,6 +152,7 @@ def main():
 
         # PLAYING BACK THE PYIN DETECTED PITCHES
         
+        # Playing back median pitches per segment
         audio_out = np.zeros(int(signal_end * fs))
         for _, start, end, median_pitch in clean_notes:
             freq = median_pitch
@@ -162,6 +163,17 @@ def main():
         audio_out = play.normalize(audio_out)
         play.play(audio_out, fs)
         play.write("pitches_pyin.wav", audio_out, fs)
+
+        # Playing back f0
+        audio_out_f0 = np.zeros(len(signal))
+        for i, freq in enumerate(f0):
+            if voiced_flag[i]:
+                start_sample = i * hop
+                t_note = np.arange(hop) / fs
+                sine = 0.5 * np.sin(2 * np.pi * freq * t_note)
+                audio_out_f0[start_sample:start_sample + hop] += sine
+        audio_out_f0 = play.normalize(audio_out_f0)
+        #play.play(audio_out_f0, fs)
 
         # TRANSCRIPTING THE NOTES TO A SCORE FILE
 
